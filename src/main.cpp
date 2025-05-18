@@ -62,9 +62,12 @@ void runInteractiveBenchmark(int optLevel) {
     int size;
     std::vector<int> arr;
 
-    std::cout << "Choose Sorting Algorithm:\n";
-   std::cout << "1. BubbleSort\n2. InsertionSort\n3. MergeSort\n4. QuickSort\n5. HeapSort\n6. std::sort\n7. ThreadedMergeSort\n";
-std::cout << "Enter choice (1-7): ";
+    std::cout << "\n=========================\n";
+    std::cout << "     Choose Algorithm     \n";
+    std::cout << "-------------------------\n";
+    std::cout << " 1. BubbleSort\n 2. InsertionSort\n 3. MergeSort\n 4. QuickSort\n 5. HeapSort\n 6. std::sort\n 7. ThreadedMergeSort\n";
+    std::cout << "-------------------------\n";
+    std::cout << "Enter choice (1-7): ";
 
     int algoChoice;
     std::cin >> algoChoice;
@@ -77,19 +80,28 @@ std::cout << "Enter choice (1-7): ";
     case 5: algorithm = "HeapSort"; break;
     case 6: algorithm = "STLSort"; break;
     case 7: algorithm = "ThreadedMergeSort"; break;
-    default: std::cout << "Invalid choice.\n"; return;
-}
+    default: 
+        std::cout << "\nInvalid choice.\n";
+        return;
+    }
 
-
-    std::cout << "\nSelect Input Size:\n1. 1,000\n2. 10,000\n3. 100,000\nChoice: ";
+    std::cout << "\n=========================\n";
+    std::cout << "      Select Size         \n";
+    std::cout << "-------------------------\n";
+    std::cout << " 1. 1,000\n 2. 10,000\n 3. 100,000\n";
+    std::cout << "-------------------------\n";
+    std::cout << "Choice: ";
     std::cin >> sizeChoice;
     if (sizeChoice == 1) size = 1000;
     else if (sizeChoice == 2) size = 10000;
     else if (sizeChoice == 3) size = 100000;
-    else { std::cout << "Invalid size choice.\n"; return; }
+    else {
+        std::cout << "\nInvalid size choice.\n";
+        return;
+    }
 
     if ((algorithm == "BubbleSort" || algorithm == "InsertionSort") && size == 100000) {
-        std::cout << " Warning: " << algorithm << " on 100,000 elements may take a LONG time.\n";
+        std::cout << "\nWarning: " << algorithm << " on 100,000 elements may take a LONG time.\n";
         std::cout << "Proceed? (y/n): ";
         char proceed;
         std::cin >> proceed;
@@ -99,7 +111,12 @@ std::cout << "Enter choice (1-7): ";
         }
     }
 
-    std::cout << "\nSelect Input Type:\n1. Random\n2. Sorted\n3. Reversed\nChoice: ";
+    std::cout << "\n=========================\n";
+    std::cout << "      Select Input Type    \n";
+    std::cout << "-------------------------\n";
+    std::cout << " 1. Random\n 2. Sorted\n 3. Reversed\n";
+    std::cout << "-------------------------\n";
+    std::cout << "Choice: ";
     std::cin >> typeChoice;
 
     std::string inputType;
@@ -113,11 +130,11 @@ std::cout << "Enter choice (1-7): ";
         inputType = "Reversed";
         arr = generateReversedArray(size);
     } else {
-        std::cout << "Invalid input type.\n";
+        std::cout << "\nInvalid input type.\n";
         return;
     }
 
-    std::cout << "\n Running " << algorithm << " on " << size << " elements (" << inputType 
+    std::cout << "\nRunning " << algorithm << " on " << size << " elements (" << inputType 
               << " input) with -O" << optLevel << "...\n";
 
     const int runs = 5;
@@ -131,21 +148,19 @@ std::cout << "Enter choice (1-7): ";
 
     printStats(runTimes);
 
-    // Incorporate optimization level into filename
     std::string filename = "SingleBenchmark_O" + std::to_string(optLevel) + "_" + algorithm + "_" + inputType + "_" + std::to_string(size) + ".csv";
     createCSVWithHeader(filename);
     for (int i = 0; i < runs; ++i) {
         exportResultToCSV(filename, algorithm, size, inputType, runTimes[i]);
     }
 
-    std::cout << " Results saved to " << filename << "\n";
+    std::cout << "Results saved to " << filename << "\n";
 }
 
-
 void runFullBenchmarkMatrix(int optLevel) {
-   const std::vector<std::string> algorithms = {
-    "BubbleSort", "InsertionSort", "MergeSort", "QuickSort", "HeapSort", "STLSort", "ThreadedMergeSort"
-};
+    const std::vector<std::string> algorithms = {
+        "BubbleSort", "InsertionSort", "MergeSort", "QuickSort", "HeapSort", "STLSort", "ThreadedMergeSort"
+    };
 
     const std::vector<int> sizes = {1000, 10000, 100000};
     const std::vector<std::string> inputTypes = {"Random", "Sorted", "Reversed"};
