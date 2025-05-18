@@ -144,8 +144,8 @@ long long benchmark(const std::string &algo, std::vector<int> &arr)
     auto start = std::chrono::high_resolution_clock::now();
     runSort(algo, copyArr);
     auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    std::cout << algo << " took " << duration << " microseconds\n";
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+    std::cout << algo << " took " << duration << " nanoseconds\n";
 
     return duration;
 }
