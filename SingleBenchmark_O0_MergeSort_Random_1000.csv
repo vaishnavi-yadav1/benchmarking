@@ -1,0 +1,6 @@
+Algorithm,Size,InputType,Time(us)
+MergeSort,1000,Random,918.7
+MergeSort,1000,Random,1049.1
+MergeSort,1000,Random,1073.5
+MergeSort,1000,Random,1159.8
+MergeSort,1000,Random,1274

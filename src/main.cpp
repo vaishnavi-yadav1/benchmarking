@@ -63,20 +63,23 @@ void runInteractiveBenchmark(int optLevel) {
     std::vector<int> arr;
 
     std::cout << "Choose Sorting Algorithm:\n";
-    std::cout << "1. BubbleSort\n2. InsertionSort\n3. MergeSort\n4. QuickSort\n5. HeapSort\n6. std::sort\n";
-    std::cout << "Enter choice (1-6): ";
+   std::cout << "1. BubbleSort\n2. InsertionSort\n3. MergeSort\n4. QuickSort\n5. HeapSort\n6. std::sort\n7. ThreadedMergeSort\n";
+std::cout << "Enter choice (1-7): ";
+
     int algoChoice;
     std::cin >> algoChoice;
 
     switch (algoChoice) {
-        case 1: algorithm = "BubbleSort"; break;
-        case 2: algorithm = "InsertionSort"; break;
-        case 3: algorithm = "MergeSort"; break;
-        case 4: algorithm = "QuickSort"; break;
-        case 5: algorithm = "HeapSort"; break;
-        case 6: algorithm = "STLSort"; break;
-        default: std::cout << "Invalid choice.\n"; return;
-    }
+    case 1: algorithm = "BubbleSort"; break;
+    case 2: algorithm = "InsertionSort"; break;
+    case 3: algorithm = "MergeSort"; break;
+    case 4: algorithm = "QuickSort"; break;
+    case 5: algorithm = "HeapSort"; break;
+    case 6: algorithm = "STLSort"; break;
+    case 7: algorithm = "ThreadedMergeSort"; break;
+    default: std::cout << "Invalid choice.\n"; return;
+}
+
 
     std::cout << "\nSelect Input Size:\n1. 1,000\n2. 10,000\n3. 100,000\nChoice: ";
     std::cin >> sizeChoice;
@@ -140,8 +143,10 @@ void runInteractiveBenchmark(int optLevel) {
 
 
 void runFullBenchmarkMatrix(int optLevel) {
-    const std::vector<std::string> algorithms = {
-        "BubbleSort", "InsertionSort", "MergeSort", "QuickSort", "HeapSort", "STLSort"};
+   const std::vector<std::string> algorithms = {
+    "BubbleSort", "InsertionSort", "MergeSort", "QuickSort", "HeapSort", "STLSort", "ThreadedMergeSort"
+};
+
     const std::vector<int> sizes = {1000, 10000, 100000};
     const std::vector<std::string> inputTypes = {"Random", "Sorted", "Reversed"};
 
@@ -204,4 +209,3 @@ int main() {
 
     return 0;
 }
-
