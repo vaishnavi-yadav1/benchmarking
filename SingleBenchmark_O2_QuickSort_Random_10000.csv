@@ -1,0 +1,6 @@
+Algorithm,Size,InputType,Time(us)
+QuickSort,10000,Random,3015
+QuickSort,10000,Random,3015
+QuickSort,10000,Random,3020
+QuickSort,10000,Random,3188
+QuickSort,10000,Random,4144

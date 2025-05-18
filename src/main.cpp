@@ -56,7 +56,7 @@ void exportResultToCSV(const std::string &filename,
     file.close();
 }
 
-void runInteractiveBenchmark() {
+void runInteractiveBenchmark(int optLevel) {
     std::string algorithm;
     int sizeChoice, typeChoice;
     int size;
@@ -114,7 +114,8 @@ void runInteractiveBenchmark() {
         return;
     }
 
-    std::cout << "\n Running " << algorithm << " on " << size << " elements (" << inputType << " input)...\n";
+    std::cout << "\n Running " << algorithm << " on " << size << " elements (" << inputType 
+              << " input) with -O" << optLevel << "...\n";
 
     const int runs = 5;
     std::vector<long long> runTimes;
@@ -127,7 +128,8 @@ void runInteractiveBenchmark() {
 
     printStats(runTimes);
 
-    std::string filename = "SingleBenchmark_" + algorithm + "_" + inputType + "_" + std::to_string(size) + ".csv";
+    // Incorporate optimization level into filename
+    std::string filename = "SingleBenchmark_O" + std::to_string(optLevel) + "_" + algorithm + "_" + inputType + "_" + std::to_string(size) + ".csv";
     createCSVWithHeader(filename);
     for (int i = 0; i < runs; ++i) {
         exportResultToCSV(filename, algorithm, size, inputType, runTimes[i]);
@@ -136,14 +138,17 @@ void runInteractiveBenchmark() {
     std::cout << " Results saved to " << filename << "\n";
 }
 
-void runFullBenchmarkMatrix() {
+
+void runFullBenchmarkMatrix(int optLevel) {
     const std::vector<std::string> algorithms = {
         "BubbleSort", "InsertionSort", "MergeSort", "QuickSort", "HeapSort", "STLSort"};
     const std::vector<int> sizes = {1000, 10000, 100000};
     const std::vector<std::string> inputTypes = {"Random", "Sorted", "Reversed"};
 
     const int runs = 5;
-    const std::string csvFile = "benchmark_results.csv";
+    std::string optStr = "O" + std::to_string(optLevel);
+    const std::string csvFile = "FullBenchmark_" + optStr + ".csv";
+
     createCSVWithHeader(csvFile);
 
     for (const auto &algo : algorithms) {
@@ -178,6 +183,10 @@ void runFullBenchmarkMatrix() {
 }
 
 int main() {
+    int optLevel;
+    std::cout<<"Enter OptLevel";
+    std::cin>>optLevel;
+
     std::cout << "===== goBench++ CLI =====\n";
     std::cout << "1. Run single benchmark (interactive)\n";
     std::cout << "2. Run full benchmark matrix (auto)\n";
@@ -186,9 +195,9 @@ int main() {
     std::cin >> choice;
 
     if (choice == 1) {
-        runInteractiveBenchmark();
+        runInteractiveBenchmark(optLevel);
     } else if (choice == 2) {
-        runFullBenchmarkMatrix();
+        runFullBenchmarkMatrix(optLevel);
     } else {
         std::cout << "Invalid option.\n";
     }
