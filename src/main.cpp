@@ -2,25 +2,24 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <fstream>
 #include "utils.hpp"
 #include "sorter.hpp"
 
-// Helper function to calculate median of a vector of longs
 long long median(std::vector<long long> &times) {
     std::sort(times.begin(), times.end());
     size_t n = times.size();
-    if (n % 2 == 0) {
-        return (times[n/2 - 1] + times[n/2]) / 2;
-    } else {
-        return times[n/2];
-    }
+    if (n % 2 == 0)
+        return (times[n / 2 - 1] + times[n / 2]) / 2;
+    else
+        return times[n / 2];
 }
 
 void printStats(const std::vector<long long> &runTimes) {
     long long sum = 0;
     for (auto t : runTimes) sum += t;
     double average = static_cast<double>(sum) / runTimes.size();
-    long long med = median(const_cast<std::vector<long long>&>(runTimes));
+    long long med = median(const_cast<std::vector<long long> &>(runTimes));
     long long minTime = *std::min_element(runTimes.begin(), runTimes.end());
     long long maxTime = *std::max_element(runTimes.begin(), runTimes.end());
 
@@ -30,14 +29,33 @@ void printStats(const std::vector<long long> &runTimes) {
         if (i != runTimes.size() - 1) std::cout << ", ";
     }
     std::cout << "]\n";
-
     std::cout << "Average: " << average << " ns\n";
     std::cout << "Median: " << med << " ns\n";
     std::cout << "Min: " << minTime << " ns\n";
     std::cout << "Max: " << maxTime << " ns\n";
 }
 
-// Interactive benchmark: choose algo, size, input type, run and print stats
+void createCSVWithHeader(const std::string &filename) {
+    std::ofstream file(filename);
+    file << "Algorithm,Size,InputType,Time(us)\n";
+    file.close();
+}
+
+void exportResultToCSV(const std::string &filename,
+                       const std::string &algorithm,
+                       int size,
+                       const std::string &inputType,
+                       long long time_ns) {
+    std::ofstream file(filename, std::ios::app);
+    if (!file.is_open()) {
+        std::cerr << "Error opening file for CSV output.\n";
+        return;
+    }
+    double time_us = time_ns / 1000.0;
+    file << algorithm << "," << size << "," << inputType << "," << time_us << "\n";
+    file.close();
+}
+
 void runInteractiveBenchmark() {
     std::string algorithm;
     int sizeChoice, typeChoice;
@@ -57,9 +75,7 @@ void runInteractiveBenchmark() {
         case 4: algorithm = "QuickSort"; break;
         case 5: algorithm = "HeapSort"; break;
         case 6: algorithm = "STLSort"; break;
-        default:
-            std::cout << "Invalid choice.\n";
-            return;
+        default: std::cout << "Invalid choice.\n"; return;
     }
 
     std::cout << "\nSelect Input Size:\n1. 1,000\n2. 10,000\n3. 100,000\nChoice: ";
@@ -67,32 +83,38 @@ void runInteractiveBenchmark() {
     if (sizeChoice == 1) size = 1000;
     else if (sizeChoice == 2) size = 10000;
     else if (sizeChoice == 3) size = 100000;
-    else {
-        std::cout << "Invalid size choice.\n";
-        return;
-    }
+    else { std::cout << "Invalid size choice.\n"; return; }
 
-    // Precaution: don't allow Bubble/Insertion sort on 100,000 elements
     if ((algorithm == "BubbleSort" || algorithm == "InsertionSort") && size == 100000) {
-        std::cout << "Warning: " << algorithm << " is too slow for 100,000 elements. Please choose a smaller input size.\n";
-        return;
+        std::cout << " Warning: " << algorithm << " on 100,000 elements may take a LONG time.\n";
+        std::cout << "Proceed? (y/n): ";
+        char proceed;
+        std::cin >> proceed;
+        if (proceed != 'y' && proceed != 'Y') {
+            std::cout << "Benchmark cancelled.\n";
+            return;
+        }
     }
 
     std::cout << "\nSelect Input Type:\n1. Random\n2. Sorted\n3. Reversed\nChoice: ";
     std::cin >> typeChoice;
 
-    if (typeChoice == 1)
+    std::string inputType;
+    if (typeChoice == 1) {
+        inputType = "Random";
         arr = generateRandomArray(size);
-    else if (typeChoice == 2)
+    } else if (typeChoice == 2) {
+        inputType = "Sorted";
         arr = generateSortedArray(size);
-    else if (typeChoice == 3)
+    } else if (typeChoice == 3) {
+        inputType = "Reversed";
         arr = generateReversedArray(size);
-    else {
+    } else {
         std::cout << "Invalid input type.\n";
         return;
     }
 
-    std::cout << "\nRunning " << algorithm << " on " << size << " elements...\n";
+    std::cout << "\n Running " << algorithm << " on " << size << " elements (" << inputType << " input)...\n";
 
     const int runs = 5;
     std::vector<long long> runTimes;
@@ -104,39 +126,41 @@ void runInteractiveBenchmark() {
     }
 
     printStats(runTimes);
+
+    std::string filename = "SingleBenchmark_" + algorithm + "_" + inputType + "_" + std::to_string(size) + ".csv";
+    createCSVWithHeader(filename);
+    for (int i = 0; i < runs; ++i) {
+        exportResultToCSV(filename, algorithm, size, inputType, runTimes[i]);
+    }
+
+    std::cout << " Results saved to " << filename << "\n";
 }
 
-
-// Run full benchmark matrix: all algos, sizes, input types with stats
 void runFullBenchmarkMatrix() {
-    const std::vector<std::string> allAlgorithms = {
-        "BubbleSort", "InsertionSort", "MergeSort", "QuickSort", "HeapSort", "STLSort"
-    };
-
-    const std::vector<std::string> fastAlgorithms = {
-        "MergeSort", "QuickSort", "HeapSort", "STLSort"
-    };
-
+    const std::vector<std::string> algorithms = {
+        "BubbleSort", "InsertionSort", "MergeSort", "QuickSort", "HeapSort", "STLSort"};
     const std::vector<int> sizes = {1000, 10000, 100000};
     const std::vector<std::string> inputTypes = {"Random", "Sorted", "Reversed"};
+
     const int runs = 5;
+    const std::string csvFile = "benchmark_results.csv";
+    createCSVWithHeader(csvFile);
 
-    for (int size : sizes) {
-        const auto& algorithms = (size == 100000) ? fastAlgorithms : allAlgorithms;
+    for (const auto &algo : algorithms) {
+        for (int size : sizes) {
+            if ((algo == "BubbleSort" || algo == "InsertionSort") && size == 100000) {
+                std::cout << "\nSkipping " << algo << " with " << size << " elements\n";
+                continue;
+            }
 
-        for (const auto& algo : algorithms) {
-            for (const auto& inputType : inputTypes) {
+            for (const auto &inputType : inputTypes) {
                 std::cout << "\nBenchmarking " << algo << " with " << size
                           << " elements (" << inputType << "):\n";
 
                 std::vector<int> arr;
-
-                if (inputType == "Random")
-                    arr = generateRandomArray(size);
-                else if (inputType == "Sorted")
-                    arr = generateSortedArray(size);
-                else if (inputType == "Reversed")
-                    arr = generateReversedArray(size);
+                if (inputType == "Random") arr = generateRandomArray(size);
+                else if (inputType == "Sorted") arr = generateSortedArray(size);
+                else if (inputType == "Reversed") arr = generateReversedArray(size);
 
                 std::vector<long long> runTimes;
                 runTimes.reserve(runs);
@@ -144,6 +168,7 @@ void runFullBenchmarkMatrix() {
                 for (int i = 0; i < runs; ++i) {
                     long long time = benchmark(algo, arr);
                     runTimes.push_back(time);
+                    exportResultToCSV(csvFile, algo, size, inputType, time);
                 }
 
                 printStats(runTimes);
@@ -151,7 +176,6 @@ void runFullBenchmarkMatrix() {
         }
     }
 }
-
 
 int main() {
     std::cout << "===== goBench++ CLI =====\n";
@@ -171,3 +195,4 @@ int main() {
 
     return 0;
 }
+
