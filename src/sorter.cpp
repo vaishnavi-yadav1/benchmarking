@@ -64,19 +64,28 @@ void mergeSort(std::vector<int>& arr) {
     }
 }
 
+
+
 int partition(std::vector<int>& arr, int low, int high) {
+    // Pick a random pivot and move it to the end
+    int randomPivotIndex = low + rand() % (high - low + 1);
+    std::swap(arr[randomPivotIndex], arr[high]);
+
     int pivot = arr[high];
     int i = low - 1;
+
     for (int j = low; j < high; ++j) {
         if (arr[j] <= pivot) {
-            i++;
+            ++i;
             std::swap(arr[i], arr[j]);
         }
     }
+
     std::swap(arr[i + 1], arr[high]);
     return i + 1;
 }
 
+// Recursive QuickSort helper
 void quickSortHelper(std::vector<int>& arr, int low, int high) {
     if (low < high) {
         int pi = partition(arr, low, high);
@@ -85,11 +94,13 @@ void quickSortHelper(std::vector<int>& arr, int low, int high) {
     }
 }
 
+// Public interface
 void quickSort(std::vector<int>& arr) {
     if (!arr.empty()) {
         quickSortHelper(arr, 0, arr.size() - 1);
     }
 }
+
 
 void heapify(std::vector<int>& arr, int n, int i) {
     int largest = i;
