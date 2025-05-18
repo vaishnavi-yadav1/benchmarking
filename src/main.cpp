@@ -44,6 +44,7 @@ int main()
 
     std::cout << "\nSelect Input Size:\n1. 1,000\n2. 10,000\n3. 100,000\nChoice: ";
     std::cin >> sizeChoice;
+
     size = (sizeChoice == 1) ? 1000 : (sizeChoice == 2) ? 10000
                                                         : 100000;
 
@@ -61,11 +62,8 @@ int main()
         std::cout << "Invalid input type.\n";
         return 1;
     }
-
-    std::cout << "\nRunning " << algorithm << " on " << size << " elements...\n";
     long long timeTaken = benchmark(algorithm, arr);
-
-    std::cout << " Completed in " << timeTaken << " microseconds.\n";
+    std::cout << "Completed in " << timeTaken << " microseconds.\n";
 
     return 0;
 }

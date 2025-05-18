@@ -1,23 +1,28 @@
-
 #include "sorter.hpp"
 #include <algorithm>
 #include <iostream>
-#include <chrono> 
+#include <chrono>
 
+void runSort(const std::string &algo, std::vector<int> &arr)
+{
+    // Uncomment the line below to debug sorting start
+    // std::cout << "Running: " << algo << " on array of size " << arr.size() << "\n";
 
-void runSort(const std::string& algo, std::vector<int>& arr) {
-    std::cout << "Running: " << algo << " on array of size " << arr.size() << "\n";
-
-    if (algo == "STLSort") {
+    if (algo == "STLSort")
+    {
         std::sort(arr.begin(), arr.end());
-    } else {
+    }
+    else
+    {
         std::cout << "Sorting algorithm '" << algo << "' not implemented yet.\n";
     }
 }
 
-long long benchmark(const std::string& algo, std::vector<int>& arr) {
+long long benchmark(const std::string &algo, std::vector<int> &arr)
+{
    
-    std::vector<int> copyArr = arr;
+
+    std::vector<int> copyArr = arr;  
 
     auto start = std::chrono::high_resolution_clock::now();
 
