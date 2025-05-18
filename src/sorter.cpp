@@ -181,7 +181,7 @@ void runSort(const std::string& algo, std::vector<int>& arr) {
         std::cout << "Sorting algorithm '" << algo << "' is not implemented.\n";
 }
 
-long long benchmark(const std::string& algo, const std::vector<int>& arr) {
+long long benchmark(const std::string& algo,  std::vector<int>& arr) {
     std::vector<int> copyArr = arr;
     auto start = std::chrono::high_resolution_clock::now();
     runSort(algo, copyArr);

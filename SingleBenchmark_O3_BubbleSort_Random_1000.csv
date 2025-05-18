@@ -1,0 +1,6 @@
+Algorithm,Size,InputType,Time(us)
+BubbleSort,1000,Random,12816.5
+BubbleSort,1000,Random,12910.3
+BubbleSort,1000,Random,12977.1
+BubbleSort,1000,Random,16328
+BubbleSort,1000,Random,16492.5
